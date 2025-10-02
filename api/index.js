@@ -39,8 +39,9 @@ export const searchSuggest = async (keywords) => {
  * @method 获取推荐歌单
  * @param {Number} limit 取出数量默认为30
  */
-export const getPersonalized = async (limit = 30) => {
-  return await api.get('/personalized', { params: { limit } })
+export const getPersonalized = async (params = {}) => {
+  const { limit = 30 } = params
+  return await api.get('/personalized/playlist', { params: { limit } })
 }
 
 /**
