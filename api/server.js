@@ -3,7 +3,6 @@ import cors from 'cors'
 import api from './index.js'
 
 const app = express()
-const PORT = process.env.PORT || 3000
 
 // 中间件
 app.use(cors())
@@ -16,22 +15,22 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     timestamp: new Date().toISOString(),
     endpoints: {
-      '/api/banner': '获取轮播图',
-      '/api/search/hot': '获取热搜列表',
-      '/api/search': '搜索',
-      '/api/search/suggest': '搜索建议',
-      '/api/personalized': '获取推荐歌单',
-      '/api/personalized/newsong': '获取推荐新歌',
-      '/api/top/artists': '获取热门歌手',
-      '/api/artist/list': '获取歌手分类列表',
-      '/api/artists': '获取歌手详情',
-      '/api/playlist/detail': '获取歌单详情',
-      '/api/song/detail': '获取歌曲详情',
-      '/api/lyric': '获取歌词',
-      '/api/toplist': '获取排行榜',
-      '/api/mv/detail': '获取MV详情',
-      '/api/mv/url': '获取MV地址',
-      '/api/album': '获取专辑详情'
+      '/api/banner': 'GET - 获取轮播图',
+      '/api/search/hot': 'GET - 获取热搜列表',
+      '/api/search': 'GET - 搜索',
+      '/api/search/suggest': 'GET - 搜索建议',
+      '/api/personalized': 'GET - 获取推荐歌单',
+      '/api/personalized/newsong': 'GET - 获取推荐新歌',
+      '/api/top/artists': 'GET - 获取热门歌手',
+      '/api/artist/list': 'GET - 获取歌手分类列表',
+      '/api/artists': 'GET - 获取歌手详情',
+      '/api/playlist/detail': 'GET - 获取歌单详情',
+      '/api/song/detail': 'GET - 获取歌曲详情',
+      '/api/lyric': 'GET - 获取歌词',
+      '/api/toplist': 'GET - 获取排行榜',
+      '/api/mv/detail': 'GET - 获取MV详情',
+      '/api/mv/url': 'GET - 获取MV地址',
+      '/api/album': 'GET - 获取专辑详情'
     },
     example: {
       search: '/api/search?keywords=周杰伦&limit=10',
@@ -223,7 +222,8 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'production',
+    platform: 'Vercel'
   })
 })
 
@@ -232,7 +232,8 @@ app.use('*', (req, res) => {
   res.status(404).json({
     code: 404,
     message: '接口不存在',
-    path: req.originalUrl
+    path: req.originalUrl,
+    suggest: '访问 / 查看所有可用接口'
   })
 })
 
@@ -246,12 +247,5 @@ app.use((err, req, res, next) => {
   })
 })
 
-// 启动服务器
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`🚀 网易云音乐API服务运行在: http://localhost:${PORT}`)
-    console.log(`📚 API文档: http://localhost:${PORT}`)
-  })
-}
-
+// Vercel需要导出app而不是监听端口
 export default app
