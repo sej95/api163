@@ -258,28 +258,66 @@ export const likeResource = async (type, t, id) => {
 }
 
 /**
- * @method 获取mv详情
+ * @method 获取MV详情 - 修正版本
  */
 export const getMvDetail = async (mvid) => {
-  return await api.get('/mv/detail', { params: { mvid } })
+  if (!mvid) {
+    throw new Error('MV ID不能为空')
+  }
+  
+  return await api.get('/mv/detail', { 
+    params: { mvid } 
+  })
 }
 
 /**
- * @method 获取mv点赞转发评论数数据
- */
-export const getMvDetailInfo = async (mvid) => {
-  return await api.get('/mv/detail/info', { params: { mvid } })
-}
-
-/**
- * @method 获取mv播放地址
+ * @method 获取MV地址 - 修正版本
  */
 export const getMvUrl = async (id) => {
-  return await api.get('/mv/url', { params: { id } })
+  if (!id) {
+    throw new Error('MV ID不能为空')
+  }
+  
+  return await api.get('/mv/url', { 
+    params: { id } 
+  })
 }
 
 /**
- * @method mv评论
+ * @method 获取MV数据 - 修正版本
+ */
+export const getMvDetailInfo = async (mvid) => {
+  if (!mvid) {
+    throw new Error('MV ID不能为空')
+  }
+  
+  return await api.get('/mv/detail/info', { 
+    params: { mvid } 
+  })
+}
+
+/**
+ * @method 获取全部MV - 修正版本
+ */
+export const getMvAll = async (params = {}) => {
+  return await api.get('/mv/all', { params })
+}
+
+/**
+ * @method 获取相关MV - 修正版本
+ */
+export const getMvRelated = async (mvid) => {
+  if (!mvid) {
+    throw new Error('MV ID不能为空')
+  }
+  
+  return await api.get('/simi/mv', { 
+    params: { mvid } 
+  })
+}
+
+/**
+ * @method 获取MV评论 - 修正版本
  */
 export const getMvComments = async (params = {}) => {
   return await api.get('/comment/mv', { params })
