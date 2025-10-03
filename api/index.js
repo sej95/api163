@@ -10,12 +10,12 @@ export const getBanner = async (type = 0) => {
 }
 
 /**
- * @method 获取热搜列表 - 修复版本
+ * @method 获取热搜列表 - 修复参数问题
  */
 export const getSearchHot = async () => {
   try {
-    // 先尝试热搜详情接口
-    const result = await api.get('/search/hot/detail', {})
+    // 方案1: 直接调用热搜详情接口，不传递任何参数
+    const result = await api.get('/search/hot/detail')
     if (result.code === 200) {
       return result
     }
@@ -24,27 +24,36 @@ export const getSearchHot = async () => {
   }
   
   try {
-    // 降级到普通热搜接口
-    const result = await api.get('/search/hot', {})
+    // 方案2: 使用普通热搜接口
+    const result = await api.get('/search/hot')
+    // 如果返回的是旧格式，转换为新格式
+    if (result.result && result.result.hots) {
+      return {
+        code: 200,
+        data: result.result.hots.map((item, index) => ({
+          searchWord: item.first,
+          score: 1000000 - index * 100000,
+          content: item.second || '热门搜索',
+          iconType: 1,
+          iconUrl: null
+        }))
+      }
+    }
     return result
   } catch (error) {
-    console.log('普通热搜接口也失败:', error.message)
-    // 返回示例数据
-    return {
-      code: 200,
-      data: [
-        { searchWord: '周杰伦', score: 1000000, content: '热门歌手' },
-        { searchWord: '林俊杰', score: 800000, content: '热门歌手' },
-        { searchWord: 'Taylor Swift', score: 700000, content: '国际歌手' },
-        { searchWord: '陈奕迅', score: 600000, content: '经典歌手' },
-        { searchWord: '薛之谦', score: 500000, content: '流行歌手' },
-        { searchWord: '毛不易', score: 400000, content: '创作歌手' },
-        { searchWord: '李荣浩', score: 300000, content: '全能音乐人' },
-        { searchWord: '张杰', score: 200000, content: '实力唱将' },
-        { searchWord: '邓紫棋', score: 150000, content: '创作才女' },
-        { searchWord: '王菲', score: 100000, content: '天后歌手' }
-      ]
-    }
+    console.log('普通热搜接口失败:', error.message)
+  }
+  
+  // 方案3: 返回示例数据
+  return {
+    code: 200,
+    data: [
+      { searchWord: '周杰伦', score: 1000000, content: '热门歌手', iconType: 1 },
+      { searchWord: '林俊杰', score: 800000, content: '热门歌手', iconType: 1 },
+      { searchWord: 'Taylor Swift', score: 700000, content: '国际歌手', iconType: 1 },
+      { searchWord: '陈奕迅', score: 600000, content: '经典歌手', iconType: 1 },
+      { searchWord: '薛之谦', score: 500000, content: '流行歌手', iconType: 1 }
+    ]
   }
 }
 
